@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\BgUsers;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Ramsey\Uuid\Uuid;
 
 class RegisterController extends Controller
 {
@@ -49,8 +51,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|string|email|max:255|unique:bg_users',
+            'password' => 'required|string|min:2|confirmed',
         ]);
     }
 
@@ -62,8 +64,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        return BgUsers::create([
+            'id' => Uuid::uuid4(),
             'name' => $data['name'],
+            'surname' => $data['surname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
